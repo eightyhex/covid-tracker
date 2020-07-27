@@ -9,13 +9,11 @@ function App() {
       await fetch("https://api.covid19api.com/countries")
       .then((response) => response.json())
       .then((data) => {
-        const allCountries = data.map((country) => (
-          {
-            name: country.Country,  // United States, United Kingdom
-            value: country.ISO2 // USA, UK
-          }))
-        
-        
+        const countries = data.map((c) => ({
+          name: c.Country,
+          value: c.ISO2,
+        }))
+        countries.sort((a,b) => a.name < b.name ? -1 : (a.name > b.name ? 1 : 0))
         setCountries(countries);
         });
     }
