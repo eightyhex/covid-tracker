@@ -3,12 +3,16 @@ import './App.css';
 import {Card, MenuItem, FormControl, Select, CardContent} from "@material-ui/core"
 import InfoBox from "./InfoBox"
 import Map from "./Map"
+import Table from "./Table"
+import {sortData} from "./util"
+import LineGraph from "./LineGraph"
 
 
 function App() {
   const [countries,setCountries] = useState([]);
   const [country, setCountry] = useState('worldwide');
   const [countryInfo, setCountryInfo] = useState({});
+  const [tableData, setTableData] = useState([]);
   
   // This allows the page to initialize to get the stats for ALL cases ON START UP
   useEffect(() => {
@@ -18,7 +22,7 @@ function App() {
       setCountryInfo(data)
     })
   }, [])
-  
+
   useEffect(() => {
     const getCountriesData = async() => {
       await fetch("https://disease.sh/v3/covid-19/countries")
@@ -28,7 +32,8 @@ function App() {
           name: c.country,
           value: c.countryInfo.iso2,
         }))
-        countries.sort((a,b) => a.name < b.name ? -1 : (a.name > b.name ? 1 : 0))
+        const sortedData = sortData(data)
+        setTableData(sortedData)
         setCountries(countries);
         });
     }
@@ -97,7 +102,9 @@ function App() {
         <CardContent>
           <h3>Live Cases by Country</h3>
           {/* Table */}
+          <Table countries={tableData}/>
           {/* Graph */}
+          <LineGraph />
           <h3>WorldWide New Cases</h3>
         </CardContent>
       </Card>
